@@ -4,10 +4,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); 
   WidgetsFlutterBinding.ensureInitialized();
-  debugPrint = (String? message, {int? wrapWidth}) {}; 
-  if (kDebugMode) { 
+  WidgetsFlutterBinding.ensureInitialized();
+  debugPrint = (String? message, {int? wrapWidth}) {};
+  if (kDebugMode) {
     WidgetsApp.debugAllowBannerOverride = false;
   }
   runApp(const MyApp());
@@ -67,7 +67,7 @@ class _ProductListState extends State<ProductList> {
   void initState() {
     super.initState();
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent){
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
         widget.onLoadMore();
       }
     });
@@ -81,21 +81,32 @@ class _ProductListState extends State<ProductList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: widget.products.length + 1,
-      itemBuilder: 
-      (context, index) {
-        if (index < widget.products.length) {
-          return ListTile(
-            title: Text(widget.products[index].title, 
-            style: const TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic,color: Color.fromARGB(255, 0, 0, 0)),),
-          );
-        } else {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        //responsive de tamaño pantalla
+        bool isSmallScreen = constraints.maxWidth < 600;
+        return ListView.builder(
+          controller: _scrollController,
+          itemCount: widget.products.length + 1,
+          itemBuilder: (context, index) {
+            if (index < widget.products.length) {
+              return ListTile(
+                title: Text(
+                  widget.products[index].title,
+                  style: TextStyle(
+                    fontSize: isSmallScreen ? 16.0 : 20.0,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.black,
+                  ),
+                ),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        );
       },
     );
   }
@@ -122,24 +133,34 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('LISTA DE PRODUCTOS',
-          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,color: Color.fromARGB(255, 0, 0, 0)),),
-          backgroundColor: Color.fromARGB(255, 52, 192, 227),
+          title: const Text(
+            'LISTA DE PRODUCTOS',
+            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          backgroundColor: const Color.fromARGB(255, 52, 192, 227),
           centerTitle: true,
         ),
-        body: FutureBuilder(
-          future: productController.fetchProducts(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else {
-              return ProductList(
-                products: productController.products,
-                onLoadMore: productController.fetchProducts,
-              );
-            }
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            return OrientationBuilder(
+              builder: (context, orientation) {
+                return FutureBuilder(
+                  future: productController.fetchProducts(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else {
+                      return ProductList(
+                        products: productController.products,
+                        onLoadMore: productController.fetchProducts,
+                      );
+                    }
+                  },
+                );
+              },
+            );
           },
         ),
       ),
