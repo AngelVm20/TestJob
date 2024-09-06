@@ -18,15 +18,13 @@ void main() async {
 class Product {
   final int id;
   final String title;
-  final String body;
 
-  Product({required this.id, required this.title, required this.body});
+  Product({required this.id, required this.title});
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       id: json['id'],
       title: json['title'],
-      body: json['body'],
     );
   }
 }
@@ -64,16 +62,13 @@ class ProductList extends StatefulWidget {
   _ProductListState createState() => _ProductListState();
 }
 class _ProductListState extends State<ProductList> {
-  final ScrollController _scrollController 
- = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) 
- {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent){
         widget.onLoadMore();
       }
     });
@@ -81,8 +76,7 @@ class _ProductListState extends State<ProductList> {
 
   @override
   void dispose() {
-    _scrollController.dispose(); 
-
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -96,9 +90,6 @@ class _ProductListState extends State<ProductList> {
         if (index < widget.products.length) {
           return ListTile(
             title: Text(widget.products[index].title, 
-            style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,color: Color.fromARGB(255, 0, 0, 0)),),
-
-            subtitle: Text(widget.products[index].body,
             style: const TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic,color: Color.fromARGB(255, 0, 0, 0)),),
           );
         } else {
