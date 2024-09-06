@@ -142,8 +142,10 @@ class _MyAppState extends State<MyApp> {
         ),
         body: LayoutBuilder(
           builder: (context, constraints) {
+            //responsive vertical u horizontal
             return OrientationBuilder(
               builder: (context, orientation) {
+                bool isPortrait = orientation == Orientation.portrait;
                 return FutureBuilder(
                   future: productController.fetchProducts(),
                   builder: (context, snapshot) {
@@ -152,10 +154,32 @@ class _MyAppState extends State<MyApp> {
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else {
-                      return ProductList(
-                        products: productController.products,
-                        onLoadMore: productController.fetchProducts,
-                      );
+                      //opciones de orientacion del dispositivo (rotacion)
+                      if (isPortrait) {
+                        //vertical
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: ProductList(
+                                products: productController.products,
+                                onLoadMore: productController.fetchProducts,
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        //horizontal
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: ProductList(
+                                products: productController.products,
+                                onLoadMore: productController.fetchProducts,
+                              ),
+                            ),
+                          ],
+                        );
+                      }
                     }
                   },
                 );
