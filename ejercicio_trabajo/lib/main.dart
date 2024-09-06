@@ -1,8 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); 
+  // Desactivar el banner de depuración
+  WidgetsFlutterBinding.ensureInitialized();
+  debugPrint = (String? message, {int? wrapWidth}) {}; // Desactivar la salida de depuración en la consola
+  // Desactivar el banner de depuración
+  if (kDebugMode) { // Verificar si estamos en modo de depuración
+    WidgetsApp.debugAllowBannerOverride = false; // Desactivar el banner
+  }
   runApp(const MyApp());
 }
 
@@ -86,8 +95,11 @@ class _ProductListState extends State<ProductList> {
       (context, index) {
         if (index < widget.products.length) {
           return ListTile(
-            title: Text(widget.products[index].title),
-            subtitle: Text(widget.products[index].body),
+            title: Text(widget.products[index].title, 
+            style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,color: Color.fromARGB(255, 0, 0, 0)),),
+
+            subtitle: Text(widget.products[index].body,
+            style: const TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic,color: Color.fromARGB(255, 0, 0, 0)),),
           );
         } else {
           return Center(
@@ -120,7 +132,10 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Lista de Productos'),
+          title: const Text('LISTA DE PRODUCTOS',
+          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,color: Color.fromARGB(255, 0, 0, 0)),),
+          backgroundColor: Color.fromARGB(255, 52, 192, 227),
+          centerTitle: true,
         ),
         body: FutureBuilder(
           future: productController.fetchProducts(),
