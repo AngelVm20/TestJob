@@ -5,12 +5,10 @@ import 'dart:convert';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
-  // Desactivar el banner de depuración
   WidgetsFlutterBinding.ensureInitialized();
-  debugPrint = (String? message, {int? wrapWidth}) {}; // Desactivar la salida de depuración en la consola
-  // Desactivar el banner de depuración
-  if (kDebugMode) { // Verificar si estamos en modo de depuración
-    WidgetsApp.debugAllowBannerOverride = false; // Desactivar el banner
+  debugPrint = (String? message, {int? wrapWidth}) {}; 
+  if (kDebugMode) { 
+    WidgetsApp.debugAllowBannerOverride = false;
   }
   runApp(const MyApp());
 }
