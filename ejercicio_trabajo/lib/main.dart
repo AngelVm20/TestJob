@@ -61,6 +61,7 @@ class ProductList extends StatefulWidget {
   @override
   _ProductListState createState() => _ProductListState();
 }
+
 class _ProductListState extends State<ProductList> {
   final ScrollController _scrollController = ScrollController();
 
